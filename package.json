@@ -1,0 +1,8 @@
+{
+  "name": "papermate",
+  "version": "0.1.0",
+  "description": "Paper writing harness for Claude Code",
+  "author": "freemty",
+  "license": "MIT",
+  "homepage": "https://github.com/freemty/papermate"
+}

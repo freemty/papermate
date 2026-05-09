@@ -1,0 +1,23 @@
+#!/bin/bash
+# Hook: PostToolUse(Bash) — remind to run figure QA after plot script completes
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
+INPUT=$(cat)
+
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+if [ -z "$COMMAND" ]; then exit 0; fi
+
+# Match python plot/figure generation commands
+if ! echo "$COMMAND" | grep -qE '(plot|figure|fig|teaser|matplotlib|savefig)'; then exit 0; fi
+if ! echo "$COMMAND" | grep -qE '^python|^conda run.*python'; then exit 0; fi
+
+# Check exit code
+EXIT_CODE=$(echo "$INPUT" | jq -r '.tool_output.exit_code // "1"' 2>/dev/null)
+if [ "$EXIT_CODE" != "0" ]; then exit 0; fi
+
+# Cooldown: at most once per 30 minutes
+check_cooldown "figure-qa" 1800 || exit 0
+
+echo "Figure generated. Run /figure-qa to check publication readiness (DPI, font size, color, layout)."

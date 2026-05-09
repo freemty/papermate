@@ -1,0 +1,51 @@
+#!/bin/bash
+# Hook: PostToolUse(Bash) — auto-check after LaTeX compilation
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
+INPUT=$(cat)
+
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
+if [ -z "$COMMAND" ]; then exit 0; fi
+
+# Match latex compilation commands
+if ! echo "$COMMAND" | grep -qE '(latexmk|pdflatex|xelatex|lualatex)'; then exit 0; fi
+
+# Check exit code
+EXIT_CODE=$(echo "$INPUT" | jq -r '.tool_output.exit_code // "1"' 2>/dev/null)
+
+# Find the log file
+PAPER_DIR=$(find_paper_dir)
+if [ -z "$PAPER_DIR" ]; then PAPER_DIR="."; fi
+
+LOG_FILE=$(find "$PAPER_DIR" -name "*.log" -newer "$PAPER_DIR/main.tex" 2>/dev/null | head -1)
+if [ -z "$LOG_FILE" ]; then exit 0; fi
+
+# Quick scan for critical issues
+UNDEF_REFS=$(grep -c "Reference.*undefined" "$LOG_FILE" 2>/dev/null || echo 0)
+UNDEF_CITES=$(grep -c "Citation.*undefined" "$LOG_FILE" 2>/dev/null || echo 0)
+MISSING_FIGS=$(grep -c "cannot find image file\|File.*not found" "$LOG_FILE" 2>/dev/null || echo 0)
+OVERFULL=$(grep -c "Overfull.*hbox" "$LOG_FILE" 2>/dev/null || echo 0)
+
+ISSUES=0
+MSG=""
+
+if [ "$UNDEF_REFS" -gt 0 ]; then
+  MSG="${MSG}${UNDEF_REFS} undefined refs. "
+  ISSUES=$((ISSUES + UNDEF_REFS))
+fi
+if [ "$UNDEF_CITES" -gt 0 ]; then
+  MSG="${MSG}${UNDEF_CITES} undefined citations. "
+  ISSUES=$((ISSUES + UNDEF_CITES))
+fi
+if [ "$MISSING_FIGS" -gt 0 ]; then
+  MSG="${MSG}${MISSING_FIGS} missing figures. "
+  ISSUES=$((ISSUES + MISSING_FIGS))
+fi
+
+if [ "$ISSUES" -gt 0 ]; then
+  echo "⚠ Compile issues: ${MSG}Run /compile-check for details."
+elif [ "$OVERFULL" -gt 5 ]; then
+  echo "Build OK but ${OVERFULL} overfull hboxes. Run /compile-check to review."
+fi

@@ -1,0 +1,30 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" post-plot-figure-qa", "async": false}]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" post-compile-check", "async": false}]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" post-tex-edit-sync-remind", "async": false}]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" post-section-change-guard", "async": false}]
+      },
+      {
+        "matcher": "Edit",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" post-writing-qa-remind", "async": false}]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [{"type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd\" post-writing-qa-remind", "async": false}]
+      }
+    ]
+  }
+}

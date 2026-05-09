@@ -1,0 +1,31 @@
+#!/bin/bash
+# Hook: PostToolUse(Edit) — remind to sync paper submodule after tex edits accumulate
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
+INPUT=$(cat)
+
+# Guard: only act on .tex file edits
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
+if [ -z "$FILE_PATH" ]; then exit 0; fi
+if ! echo "$FILE_PATH" | grep -qE '\.tex$'; then exit 0; fi
+
+# Find paper dir
+PAPER_DIR=$(find_paper_dir)
+if [ -z "$PAPER_DIR" ]; then exit 0; fi
+
+# Check if the edited file is inside the paper submodule
+case "$FILE_PATH" in
+  *"$PAPER_DIR"*) ;;
+  *) exit 0 ;;
+esac
+
+# Count uncommitted changes in paper dir
+CHANGES=$(cd "$PAPER_DIR" && git status --short 2>/dev/null | wc -l | tr -d ' ')
+if [ "$CHANGES" -lt 5 ]; then exit 0; fi
+
+# Cooldown: at most once per 2 hours
+check_cooldown "sync-remind" 7200 || exit 0
+
+echo "Paper submodule has ${CHANGES} uncommitted changes. Run /sync-paper to commit and update pointer."

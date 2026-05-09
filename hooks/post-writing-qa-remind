@@ -1,0 +1,30 @@
+#!/bin/bash
+# Hook: PostToolUse(Edit/Write) — remind to run writing QA after substantial tex prose
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
+INPUT=$(cat)
+
+# Guard: only act on .tex file writes
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
+if [ -z "$FILE_PATH" ]; then exit 0; fi
+if ! echo "$FILE_PATH" | grep -qE '\.tex$'; then exit 0; fi
+
+# Check if substantial text was written (not just \includegraphics or equation edits)
+NEW_STRING=$(echo "$INPUT" | jq -r '.tool_input.new_string // .tool_input.content // empty' 2>/dev/null)
+if [ -z "$NEW_STRING" ]; then exit 0; fi
+
+# Count words (rough — strip latex commands)
+WORD_COUNT=$(echo "$NEW_STRING" | sed 's/\\[a-zA-Z]*{[^}]*}//g' | wc -w | tr -d ' ')
+if [ "$WORD_COUNT" -lt 100 ]; then exit 0; fi
+
+# Skip if mostly equations/figures
+EQUATION_LINES=$(echo "$NEW_STRING" | grep -cE '\\begin\{(equation|align|figure|table)\}' || echo 0)
+TEXT_LINES=$(echo "$NEW_STRING" | grep -cvE '^\s*$|\\begin|\\end|\\includegraphics|\\label|\\caption' || echo 0)
+if [ "$EQUATION_LINES" -gt "$TEXT_LINES" ]; then exit 0; fi
+
+# Cooldown: at most once per hour
+check_cooldown "writing-qa" 3600 || exit 0
+
+echo "Substantial prose written (~${WORD_COUNT} words). Run /paper-writing-qa to check for AI flavor and flow issues."

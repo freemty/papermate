@@ -1,0 +1,17 @@
+{
+  "name": "papermate",
+  "version": "0.1.0",
+  "description": "Paper writing harness for Claude Code — from figures to submission-ready manuscripts.",
+  "author": {
+    "name": "freemty",
+    "url": "https://github.com/freemty"
+  },
+  "homepage": "https://github.com/freemty/papermate",
+  "repository": "https://github.com/freemty/papermate",
+  "license": "MIT",
+  "keywords": ["paper", "writing", "latex", "academic", "claude-code", "skills", "harness"],
+  "agents": [
+    "./agents/writing-reviewer.md"
+  ],
+  "skills": ["./skills/"]
+}

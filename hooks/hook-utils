@@ -1,0 +1,36 @@
+#!/bin/bash
+# Shared utilities for papermate hooks
+
+# Frequency limiter: prevent hook from firing more than once per interval
+# Usage: check_cooldown "hook-name" 3600  (3600 seconds = 1 hour)
+check_cooldown() {
+  local hook_name="$1"
+  local interval="${2:-3600}"
+  local state_dir="${PAPERMATE_STATE_DIR:-.papermate}"
+  local stamp_file="${state_dir}/.cooldown_${hook_name}"
+
+  mkdir -p "$state_dir"
+
+  if [ -f "$stamp_file" ]; then
+    local last=$(cat "$stamp_file")
+    local now=$(date +%s)
+    local diff=$((now - last))
+    if [ "$diff" -lt "$interval" ]; then
+      return 1  # still in cooldown
+    fi
+  fi
+
+  date +%s > "$stamp_file"
+  return 0  # ok to fire
+}
+
+# Detect paper directory (submodule or standalone)
+find_paper_dir() {
+  if [ -f ".gitmodules" ] && grep -q "paper" .gitmodules 2>/dev/null; then
+    git config -f .gitmodules --get-regexp 'submodule\..*paper.*\.path' | awk '{print $2}' | head -1
+  elif [ -d "paper/.git" ] || [ -f "paper/.git" ]; then
+    echo "paper"
+  else
+    echo ""
+  fi
+}

@@ -1,0 +1,39 @@
+#!/bin/bash
+# Hook: PostToolUse(Edit) — detect section restructuring and warn about broken refs
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+source "${SCRIPT_DIR}/hook-utils"
+
+INPUT=$(cat)
+
+# Guard: only act on .tex file edits
+FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty' 2>/dev/null)
+if [ -z "$FILE_PATH" ]; then exit 0; fi
+if ! echo "$FILE_PATH" | grep -qE '\.tex$'; then exit 0; fi
+
+# Check if the edit touches \section, \label, or \subsection
+NEW_STRING=$(echo "$INPUT" | jq -r '.tool_input.new_string // empty' 2>/dev/null)
+OLD_STRING=$(echo "$INPUT" | jq -r '.tool_input.old_string // empty' 2>/dev/null)
+
+SECTION_CHANGE=0
+
+# Detect label changes
+if echo "$OLD_STRING" | grep -qE '\\label\{'; then
+  OLD_LABEL=$(echo "$OLD_STRING" | grep -oE '\\label\{[^}]+\}' | head -1)
+  NEW_LABEL=$(echo "$NEW_STRING" | grep -oE '\\label\{[^}]+\}' | head -1)
+  if [ "$OLD_LABEL" != "$NEW_LABEL" ]; then
+    SECTION_CHANGE=1
+  fi
+fi
+
+# Detect section/subsection changes
+if echo "$OLD_STRING$NEW_STRING" | grep -qE '\\(sub)?section\{'; then
+  SECTION_CHANGE=1
+fi
+
+if [ "$SECTION_CHANGE" -eq 0 ]; then exit 0; fi
+
+# Cooldown: at most once per 30 minutes
+check_cooldown "section-guard" 1800 || exit 0
+
+echo "Section structure changed. Run /section-guard to check for broken \\ref{} and stale \\label{}."
