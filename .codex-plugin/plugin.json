@@ -1,0 +1,41 @@
+{
+  "name": "papermate",
+  "version": "0.1.0",
+  "description": "Paper writing harness for Codex: figures, LaTeX checks, writing QA, and submission readiness.",
+  "author": {
+    "name": "freemty",
+    "url": "https://github.com/freemty"
+  },
+  "homepage": "https://github.com/freemty/papermate",
+  "repository": "https://github.com/freemty/papermate",
+  "license": "MIT",
+  "keywords": [
+    "paper",
+    "writing",
+    "latex",
+    "academic",
+    "codex",
+    "skills",
+    "harness"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "Papermate",
+    "shortDescription": "Paper writing QA, figure checks, LaTeX compile audits, and submission readiness.",
+    "longDescription": "Papermate packages paper-writing workflow skills for LaTeX compile checks, publication figure QA, section reference guards, writing quality audits, paper synchronization, and final pre-submit adversarial review.",
+    "developerName": "freemty",
+    "category": "Research",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/freemty/papermate",
+    "defaultPrompt": [
+      "Check this paper build for LaTeX warnings.",
+      "Run figure QA on the latest plot.",
+      "Do a pre-submit challenge for this paper."
+    ],
+    "brandColor": "#7C3AED"
+  }
+}
