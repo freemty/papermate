@@ -1,9 +1,6 @@
 ---
 name: pre-submit-challenge
-description: >
-  Use before paper submission as a final adversarial review. Triggers on
-  'pre-submit', 'challenge', 'submission check', 'ready to submit?',
-  '提交前检查'. Runs Codex adversarial + internal consistency audit.
+description: Use when a paper is at its final pre-submission gate and needs an adversarial code-evidence consistency review.
 ---
 
 # Pre-Submit Challenge
@@ -45,16 +42,12 @@ Think like a hostile reviewer:
 4. **Supplementary**: Is anything promised in main text but missing from appendix?
 5. **References**: Any placeholder citations? Any self-citations that should be anonymized?
 
-### Phase 4: Codex Challenge (Optional)
+### Phase 4: Independent Challenge (Optional)
 
-If Codex CLI is available, dispatch adversarial review:
-
-```bash
-codex --model o3 --approval-mode full-auto \
-  "You are an adversarial reviewer. Read the paper at paper/main.tex and the code at src/. \
-   Find 3 concrete issues where the code contradicts the paper, or where claims lack evidence. \
-   Be specific — cite line numbers in both code and paper."
-```
+When the host supports an independent read-only reviewer, ask it to find three
+concrete code-paper contradictions or unsupported claims with line-level
+evidence. The main thread verifies every finding before merging it into the
+report. If independent review is unavailable, perform the same pass directly.
 
 ## Output Format
 
