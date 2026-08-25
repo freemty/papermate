@@ -1,6 +1,6 @@
 ---
 name: paper-writing-qa
-description: Use when a paper section needs a focused quality audit for claims, flow, citations, formalization, or AI-like prose.
+description: Use when a paper section needs a focused quality audit for claims, flow, citations, formalization, or AI-like prose. Triggers on 'check writing', 'polish', 'review the text', 'AI味', or after generating any LaTeX text.
 ---
 
 # Paper Writing QA

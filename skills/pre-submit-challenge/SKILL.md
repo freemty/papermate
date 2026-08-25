@@ -1,6 +1,6 @@
 ---
 name: pre-submit-challenge
-description: Use when a paper is at its final pre-submission gate and needs an adversarial code-evidence consistency review.
+description: Use when a paper is at its final pre-submission gate and needs an adversarial code-evidence consistency review. Triggers on 'pre-submit', 'challenge', 'submission check', 'ready to submit?', '提交前检查'.
 ---
 
 # Pre-Submit Challenge
