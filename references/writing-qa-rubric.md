@@ -6,11 +6,11 @@ Audit a paper section for writing quality. Focuses on **how** things are written
 
 - After drafting or revising any section
 - When user says "review the writing", "check this section", "polish", "去AI味"
-- Proactively after generating paper text (>200 words of prose)
+- For a requested revision or material writing concern; text length alone is not a trigger
 
 ## Audit Procedure
 
-Read the target section(s), then check against all criteria below. Report findings as a structured list with severity (Critical / Important / Minor) and specific line-level fixes.
+Read the target section(s), then check the relevant criteria below. Report findings as a structured list with severity (Critical / Important / Minor) and specific line-level fixes.
 
 ---
 
@@ -18,7 +18,7 @@ Read the target section(s), then check against all criteria below. Report findin
 
 ### 1.1 Overclaiming
 
-Flag any of these patterns:
+Use these as review clues, not forbidden vocabulary; preserve valid technical meanings:
 - "systematic/comprehensive/extensive" + noun (let data speak for itself)
 - "novel/first/unique" (reviewer decides novelty)
 - "demonstrates/reveals/establishes" (use "shows/finds/suggests")
@@ -129,7 +129,7 @@ Flag important concepts defined only in prose:
 
 ### 4.2 Equation Hygiene
 
-- Every equation should be followed by a one-sentence intuition
+- Explain equations when their meaning is not already clear from context
 - Notation must be consistent across sections
 - Superscripts/subscripts should cover all axes the concept varies over
 
@@ -145,9 +145,9 @@ Flag important concepts defined only in prose:
 
 ### 5.1 Subsection-Figure Alignment
 
-- Each subsection should have at most one primary figure
+- Group figures by the argument they support; no fixed per-subsection quota
 - Text should appear before the figure it references
-- If two paragraphs both cite the same figure, they likely belong in the same subsection
+- Shared figure citations can prompt a structure review, but do not establish that sections should merge
 
 ### 5.2 Paragraph Naming
 

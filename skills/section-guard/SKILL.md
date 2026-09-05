@@ -59,8 +59,8 @@ grep -rhn '\\includegraphics' *.tex 2>/dev/null | \
 ### Step 4: Check section ordering consistency
 
 - Read `\section` order from main.tex
-- Verify that forward references don't point to later-defined labels (anti-pattern)
-- Check if CLAUDE.md figure inventory is stale compared to actual `\label{fig:}`
+- Check that forward references resolve and do not require unexplained concepts; ordinary forward figure/section references are valid.
+- Check if AGENTS.md or CLAUDE.md figure inventory is stale compared to actual `\label{fig:}`
 
 ### Step 5: Report
 
@@ -77,7 +77,7 @@ grep -rhn '\\includegraphics' *.tex 2>/dev/null | \
 - gfx/old_figure.pdf — referenced but file not found
 
 ### Documentation Drift
-- CLAUDE.md lists fig:xxx but paper no longer has it
+- Project instructions list fig:xxx but paper no longer has it
 
 ### Verdict: [Clean / N issues found]
 ```

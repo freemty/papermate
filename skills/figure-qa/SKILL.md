@@ -16,6 +16,10 @@ Audit a generated figure against publication standards. Catches issues that caus
 - When user asks "is this figure ok", "check the plot"
 - Proactively when a figure is about to be committed to the paper
 
+Inspect the actual figure at its final size using available image/PDF rendering.
+Metadata checks alone do not establish readability or layout. Treat numeric limits
+below as defaults; the target venue and artifact requirements take precedence.
+
 ## Checklist
 
 ### 1. Resolution & Format

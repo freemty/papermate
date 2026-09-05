@@ -11,7 +11,7 @@ Adversarial final-pass before submission. Tries to break the paper's claims by f
 
 - Right before submitting to a venue (NeurIPS, ICML, ICLR, etc.)
 - When user says "ready to submit?", "pre-submit check", "challenge this"
-- After all other QA skills have passed
+- When a final evidence-consistency gate is requested; reuse relevant prior QA
 
 ## Procedure
 
@@ -44,7 +44,7 @@ Think like a hostile reviewer:
 
 ### Phase 4: Independent Challenge (Optional)
 
-When the host supports an independent read-only reviewer, ask it to find three
+When the host supports an independent read-only reviewer, ask it to identify evidence-supported
 concrete code-paper contradictions or unsupported claims with line-level
 evidence. The main thread verifies every finding before merging it into the
 report. If independent review is unavailable, perform the same pass directly.
@@ -65,6 +65,6 @@ report. If independent review is unavailable, perform the same pass directly.
 
 ### Verdict
 - Submission-ready: [Yes / No — fix N critical issues first]
-- Estimated reviewer score if submitted now: [X/10]
+- Confidence and unresolved evidence gaps: [source-backed assessment]
 - Top risk: [what's most likely to get the paper rejected]
 ```

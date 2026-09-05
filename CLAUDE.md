@@ -1,53 +1,21 @@
 # PaperMate
 
-> Paper writing harness for Claude Code — from figures to submission-ready manuscripts.
+Version 0.2.0. Six portable paper-writing skills and one Claude named reviewer.
+The same role can run in an ordinary subagent or the main thread.
 
-Companion to [labmate](https://github.com/freemty/labmate). Labmate handles research (experiments, analysis, literature); PaperMate handles writing (text quality, figures, compilation, sync, submission).
+Skills: compile-check, figure-qa, paper-writing-qa, section-guard, sync-paper and
+pre-submit-challenge. Invoke through the host's skill selector. Claude plugin
+syntax is `/papermate:<skill>`; Codex plugin syntax is `$papermate:<skill>`.
 
-## Quick commands
+Only one default hook remains: current compiler-output diagnostics after a
+recognized compilation command. It reports actual undefined references, missing
+assets and overfull boxes; it does not read an unrelated stale log or recommend
+other skills after ordinary edits. This is feedback, not a permission gate.
 
-| Command | Purpose |
-|---------|---------|
-| `/paper-writing-qa` | Audit text for AI flavor, flow, citations |
-| `/figure-qa` | Check figure publication readiness |
-| `/compile-check` | Post-compilation warning audit |
-| `/sync-paper` | One-command paper submodule sync |
-| `/section-guard` | Detect broken refs after restructuring |
-| `/pre-submit-challenge` | Adversarial final-pass before submission |
+Paper synchronization requires the matching commit/push intent and exact nested
+repository/remotes. Read-only review does not authorize edits or publication.
+Inspect figures/layout when those properties matter; model role counts, reviewer
+scores and full QA suites are not universal completion requirements.
 
-## Plugin architecture
-
-| Component | Location | Auto-loaded |
-|-----------|----------|-------------|
-| Agents (1) | agents/ | Yes (plugin.json) |
-| Skills (6) | skills/ | Yes (plugin.json) |
-| Hooks (5) | hooks/ | Yes (hooks.json) |
-
-## Hooks (auto-triggers)
-
-| Hook | Trigger | Action |
-|------|---------|--------|
-| post-plot-figure-qa | Python plot script succeeds | Remind `/figure-qa` |
-| post-compile-check | latexmk/pdflatex completes | Report undefined refs, missing figs |
-| post-tex-edit-sync-remind | 5+ uncommitted paper changes | Remind `/sync-paper` |
-| post-section-change-guard | `\section`/`\label` edits | Remind `/section-guard` |
-| post-writing-qa-remind | 100+ words of prose written | Remind `/paper-writing-qa` |
-
-## Agents
-
-| Agent | Model | Purpose |
-|-------|-------|---------|
-| writing-reviewer | opus | Deep writing quality review — AI flavor, flow, citations |
-
-## Relationship to labmate
-
-```
-labmate (upstream)          papermate (downstream)
-─────────────────           ────────────────────
-/new-experiment      →      /figure-qa (results → figures)
-/analyze-experiment  →      /compile-check (figures → paper)
-/monitor             →      /sync-paper (paper → overleaf)
-/read-paper          →      /paper-writing-qa (text quality)
-/update-knowhow     →      /section-guard (structure integrity)
-                            /pre-submit-challenge (final gate)
-```
+`python3 tests/test_compile_feedback.py` covers Claude/Codex payloads, unrelated
+events, clean output and failures. Real host hook invocation is a separate check.
